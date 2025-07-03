@@ -84,8 +84,15 @@
 
 <section>
   <h2>Step 3: Researching Vulnerabilities</h2>
-  <p>After identifying the exact version of the target software—TeamCity 2023.11.3—we perform a quick search on vulnerability databases such as the National Vulnerability Database (NVD) or CVE.org. Using search queries like “TeamCity 2023.11.3 CVE” or “TeamCity vulnerabilities 2023.11.3,” we look for any reported security issues affecting this specific release. This search reveals CVE-2024-27198, a critical authentication bypass vulnerability that allows an attacker to gain unauthorized access and execute code remotely on the TeamCity server without providing valid credentials. The high severity rating indicates the significant impact this flaw could have on the target system. Understanding this vulnerability confirms that the target running TeamCity 2023.11.3 is exploitable. This information guides the next steps of the attack, focusing on leveraging this authentication bypass to achieve remote code execution.:</p>
-  <p>These findings suggest that exploiting the authentication bypass can give us shell access without credentials.</p>
+  <p>
+    Once we identify the exact software version — <strong>TeamCity 2023.11.3</strong> — our next move is to investigate known security issues affecting this release. We do this by consulting reputable vulnerability databases such as the <strong>National Vulnerability Database (NVD)</strong> and <strong>CVE.org</strong>. Using precise search queries like <em>“TeamCity 2023.11.3 CVE”</em> or <em>“TeamCity vulnerabilities 2023.11.3”</em>, we look for documented flaws.
+  </p>
+  <p>
+    This research reveals a critical vulnerability: <strong>CVE-2024-27198</strong>. This flaw allows an attacker to bypass authentication mechanisms entirely, granting unauthorized remote code execution (RCE) on the TeamCity server — without needing any valid credentials. The severity of this vulnerability is rated <span class="critical">critical</span>, reflecting the serious risk it poses to the target system.
+  </p>
+  <p>
+    Understanding this vulnerability is a pivotal moment. It confirms that the TeamCity instance is exploitable and sets the direction for our next steps. By leveraging this authentication bypass, we can gain shell access and full control over the target, making it a powerful entry point for the attack.
+  </p>
 </section>
 
 <section>
