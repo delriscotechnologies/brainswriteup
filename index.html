@@ -92,8 +92,8 @@
   <pre>msfconsole</pre>
   <p>I searched for the exploit module using the CVE identifier:</p>
   <pre>search CVE-2024-27198</pre>
-  <p>It returned a match: <code>exploit/multi/http/teamcity_auth_bypass_rce</code>. Instead of using the numbered shortcut, I loaded it directly:</p>
-  <pre>use exploit/multi/http/teamcity_auth_bypass_rce</pre>
+  <p>I select the exploit module it returned (option 0) and use it:</p>
+  <pre>use 0</pre>
   <p>To fully understand the module, I ran:</p>
   <pre>info</pre>
   <p>Then I set the remote target IP and port:</p>
