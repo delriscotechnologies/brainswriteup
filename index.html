@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,32 +8,32 @@
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
   body {
     background-color: #d2b48c;
-    color: #4b3b2b;
+    color: #3a2c1c;
     font-family: 'Share Tech Mono', monospace;
     margin: 2rem;
+    line-height: 1.6;
   }
   h1, h2 {
-    color: #3e2c1c;
+    color: #2d1b0f;
   }
   pre {
-    background-color: #c0a16b;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    background-color: #c2a76e;
+    padding: 0.75rem;
+    border-radius: 5px;
     overflow-x: auto;
   }
   code {
-    font-family: monospace;
-    background-color: #b99865;
-    padding: 2px 4px;
+    background-color: #b59364;
+    padding: 2px 5px;
     border-radius: 4px;
   }
   section {
-    margin-bottom: 2.5rem;
-    padding: 1rem;
-    background-color: #f0e1c6;
-    border-left: 5px solid #9c7b4f;
+    background-color: #f2e4cd;
+    border-left: 5px solid #8a6b42;
     border-radius: 6px;
-    box-shadow: 1px 2px 5px rgba(0,0,0,0.1);
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
   }
   header {
     margin-bottom: 3rem;
@@ -42,105 +41,94 @@
   footer {
     margin-top: 4rem;
     font-size: 0.9rem;
-    color: #4b3b2b;
+    color: #3a2c1c;
     text-align: center;
-  }
-  ul {
-    line-height: 1.5;
   }
 </style>
 </head>
 <body>
 <header>
   <h1>TryHackMe: Brains Write-up</h1>
-  <p>The <em>Brains</em> room on TryHackMe centers on exploiting a critical authentication bypass vulnerability in JetBrains TeamCity. Beginning with only the target IP address, you will navigate the exploitation process to gain unauthorized access.</p>
-  <p>Beyond the offensive aspect, the challenge shifts perspective to defenders, where you’ll analyze Splunk logs to detect and understand the attack’s footprint. This experience bridges the gap between attacker techniques and defender response, offering insight into both sides of a real-world security incident.</p>
+  <p>Cybersecurity often begins with a single thread — an IP address, a service banner, or a version number. The <em>Brains</em> room on TryHackMe invites you to pull that thread and see what unravels.</p>
+  <p>This room simulates a real-world attack scenario against a vulnerable CI/CD platform: JetBrains TeamCity. You begin with just a target IP and no context. Your goal is to perform reconnaissance, discover a known critical vulnerability, exploit it to gain access, and then pivot into a Blue Team role to analyze how such an attack would be detected using Splunk logs.</p>
+  <p>It’s designed for learners of all levels, but especially helpful for those looking to connect theory to practice. If you’re studying for the Security+, OSCP, or just want to understand attacker methodology in a safe lab, this room offers a structured experience grounded in real-world tactics.</p>
 </header>
 
 <section>
-  <h2>Step 1: Scanning the Target</h2>
-  <p>We start with the only information we have: the target IP address <code>10.10.164.206</code>. The first task is to enumerate the target by scanning for open ports and services to identify potential attack vectors.</p>
-  <p>We run the following command using <code>nmap</code> to quickly map out exposed services:</p>
+  <h2>Step 1: Discovering the Attack Surface</h2>
+  <p>We begin with the target: <code>10.10.164.206</code>. Our first action is scanning for open ports using <code>nmap</code>:</p>
   <pre>nmap 10.10.164.206</pre>
-  <p>The scan reveals three open ports:</p>
+  <p>Results:</p>
   <ul>
-    <li><strong>22/tcp (SSH):</strong> Typically used for secure shell access.</li>
-    <li><strong>80/tcp (HTTP):</strong> Standard web server port.</li>
-    <li><strong>50000/tcp:</strong> A high port running a web service (TeamCity).</li>
+    <li><strong>22/tcp (SSH)</strong> – Secure shell, possibly for admin access.</li>
+    <li><strong>80/tcp (HTTP)</strong> – Default web server, worth visiting.</li>
+    <li><strong>50000/tcp</strong> – A high web port, which often reveals hidden or administrative services.</li>
   </ul>
-  <p>Port scanning is essential because it defines the attack surface. Knowing which services are accessible helps us prioritize next steps.</p>
+  <p>This reconnaissance phase is about defining the exposed attack surface, just like in the initial stages of the Cyber Kill Chain.</p>
 </section>
 
 <section>
-  <h2>Step 2: Exploring Services</h2>
-  <p>Next, we manually investigate each open port:</p>
+  <h2>Step 2: Exploring and Identifying the Target</h2>
+  <p>I began visiting the exposed services in my browser.</p>
   <ul>
-    <li><strong>Port 22 (SSH):</strong> Attempting SSH login fails due to unknown credentials.</li>
-    <li><strong>Port 80 (HTTP):</strong> Visiting <code>http://10.10.164.206:80</code> shows a maintenance page, with no useful information or hidden elements.</li>
-    <li><strong>Port 50000 :</strong> Navigating to <code>http://10.10.164.206:50000</code> brings up a TeamCity login page. Importantly, the page footer shows the exact TeamCity version: <strong>2023.11.3 (build 147512)</strong>.</li>
+    <li><strong>SSH</strong>: Blocked. No credentials. No brute force.</li>
+    <li><strong>HTTP (80)</strong>: A default maintenance page. The source code was clean. No JavaScript tricks, no hints.</li>
+    <li><strong>HTTP (50000)</strong>: Jackpot. The login page of JetBrains TeamCity was exposed. In the footer, I found the version: <strong>2023.11.3 (build 147512)</strong>.</li>
   </ul>
-  <p>Identifying the software version is critical because it enables us to research known vulnerabilities for that specific version.</p>
+  <p>Why this matters? Knowing the exact software version is crucial. It lets you look up public vulnerabilities and match them to real-world exploits.</p>
 </section>
 
 <section>
-  <h2>Step 3: Researching Vulnerabilities</h2>
-  <p>
-    Once we identify the exact software version — <strong>TeamCity 2023.11.3</strong> — our next move is to investigate known security issues affecting this release. We do this by consulting reputable vulnerability databases such as the <strong>National Vulnerability Database (NVD)</strong> and <strong>CVE.org</strong>. Using precise search queries like <em>“TeamCity 2023.11.3 CVE”</em> or <em>“TeamCity vulnerabilities 2023.11.3”</em>, we look for documented flaws.
-  </p>
-  <p>
-    This research reveals a critical vulnerability: <strong>CVE-2024-27198</strong>. This flaw allows an attacker to bypass authentication mechanisms entirely, granting unauthorized remote code execution (RCE) on the TeamCity server — without needing any valid credentials. The severity of this vulnerability is rated <span class="critical">critical</span>, reflecting the serious risk it poses to the target system.
-  </p>
-  <p>
-    Understanding this vulnerability is a pivotal moment. It confirms that the TeamCity instance is exploitable and sets the direction for our next steps. By leveraging this authentication bypass, we can gain shell access and full control over the target, making it a powerful entry point for the attack.
-  </p>
+  <h2>Step 3: Vulnerability Research</h2>
+  <p>After identifying TeamCity <strong>2023.11.3</strong>, I first did a quick search on Google to check if anything obvious came up. Then I went to trusted databases like the <a href="https://nvd.nist.gov/" target="_blank">NVD</a> and <a href="https://cve.org" target="_blank">CVE.org</a>. I used queries like:</p>
+  <pre>"TeamCity 2023.11.3"</pre>
+  <p>This quickly led me to <strong>CVE-2024-27198</strong> — an <em>authentication bypass vulnerability</em> with a CVSS score of 9.8. This vulnerability allows attackers to bypass login and interact directly with internal server endpoints, enabling remote code execution (RCE).</p>
+  <p>This stage maps directly to the <strong>weaponization</strong> phase in the Cyber Kill Chain. I now had a known, critical vulnerability to exploit—verified and confirmed by the version I discovered earlier.</p>
 </section>
 
 <section>
-  <h2>Step 4: Exploitation via Metasploit</h2>
-  <p>We move to Kali Linux and open <code>msfconsole</code> to search for the exploit:</p>
+  <h2>Step 4: Exploiting with Metasploit</h2>
+  <p>With the vulnerability verified, I switched to my attacker box running Kali Linux and launched Metasploit:</p>
   <pre>msfconsole</pre>
+  <p>I searched for the exploit module using the CVE identifier:</p>
   <pre>search CVE-2024-27198</pre>
-  <p>We select the exploit module (option 0) and use it:</p>
-  <pre>use 0</pre>
-  <p>To understand what the exploit does and the required parameters, we run:</p>
+  <p>It returned a match: <code>exploit/multi/http/teamcity_auth_bypass_rce</code>. Instead of using the numbered shortcut, I loaded it directly:</p>
+  <pre>use exploit/multi/http/teamcity_auth_bypass_rce</pre>
+  <p>To fully understand the module, I ran:</p>
   <pre>info</pre>
-  <p>We then configure the remote host and port:</p>
+  <p>Then I set the remote target IP and port:</p>
   <pre>set RHOSTS 10.10.164.206
 set RPORT 50000</pre>
-  <p>Finally, we launch the exploit:</p>
+  <p>Finally, I launched the exploit:</p>
   <pre>run</pre>
-  <p>Successful exploitation provides us a shell as the <code>ubuntu</code> user. From there, we read the flag file:</p>
+  <p>This provided a Meterpreter session as the <code>ubuntu</code> user. I validated my access with:</p>
   <pre>cat /home/ubuntu/flag.txt</pre>
 </section>
 
 <section>
-  <h2>Step 5: Defensive Log Analysis with Splunk</h2>
-  <p>Switching to the defender’s role, we log into a Splunk instance with access to relevant server logs to investigate suspicious activity following the compromise.</p>
-  <h3>User Creation</h3>
-  <p>First, we search the authentication logs for any user creation events:</p>
+  <h2>Step 5: Defensive Detection with Splunk</h2>
+  <p>Now on the Blue Team side, I accessed Splunk to see what traces the attack had left behind.</p>
+  <h3>1. Suspicious User Creation</h3>
   <pre>source="/var/log/auth.log" useradd</pre>
-  <p>This reveals a new user was created on July 4, 2024, likely a backdoor account established by the attacker.</p>
-  <h3>Malicious Package Installation</h3>
-  <p>Next, we query package installation logs for anything unusual around the same date:</p>
+  <p>This showed a new user was added right after the exploit was run. Likely for persistence.</p>
+  <h3>2. Unusual Package Installation</h3>
   <pre>source="/var/log/dpkg.log" date_month="july" date_mday="4" install</pre>
-  <p>A suspicious package appears, indicating persistence or further compromise actions.</p>
-  <h3>Plugin Upload in TeamCity</h3>
-  <p>Finally, we check TeamCity’s activity logs for evidence of plugin uploads (which can be used by attackers to maintain access):</p>
+  <p>Here, a suspicious package not part of the base install was added. Possibly a backdoor.</p>
+  <h3>3. Plugin Upload in TeamCity</h3>
   <pre>source="/opt/teamcity/TeamCity/logs/teamcity-activities.log" plugin</pre>
-  <p>This confirms a plugin was installed shortly after exploitation.</p>
+  <p>This confirmed a plugin was uploaded—likely the method used to deliver the payload.</p>
 </section>
 
 <section>
   <h2>Final Thoughts</h2>
-  <p>The Brains room offers a realistic glimpse into modern cybersecurity operations by combining offensive exploitation with defensive investigation. It emphasizes that effective security requires understanding both perspectives.</p>
-  <p>By starting with just an IP address, we performed methodical reconnaissance, identifying open services and versions to pinpoint vulnerabilities. Using Metasploit automates the exploitation, but the real value comes from knowing how to research and configure it correctly.</p>
-  <p>Switching to log analysis, we saw how defenders piece together evidence from multiple sources—auth logs, package logs, and application activity—to detect attacker behavior. Each query brings additional context to the incident timeline.</p>
-  <p>This hands-on practice reinforces the importance of the cyber kill chain: identifying attack surface (reconnaissance and weaponization), gaining access (exploitation), and detecting and responding (analysis and mitigation).</p>
-  <p>Overall, this experience sharpened my skills in offensive tools like Nmap and Metasploit, and defensive platforms like Splunk, while deepening my understanding of attacker methodologies and defender workflows.</p>
+  <p>This room highlights the full lifecycle of a cyberattack—from discovering the surface to exploiting it and tracing the aftermath. It's a compact simulation of how red team operations evolve and how blue teams detect and respond.</p>
+  <p>It reinforced the importance of curiosity and persistence. I didn’t know everything up front—I had to research the CVE, look up Metasploit syntax, and run queries in Splunk I hadn’t tried before. But step by step, it came together.</p>
+  <p>What really helped was watching breakdowns of similar rooms on YouTube. Seeing how others think, troubleshoot, and explain their process made all the difference. I recommend taking the same approach: combine hands-on with community resources to strengthen both your offensive and defensive skills.</p>
+  <p>Security isn't just about tools—it's about how you approach problems, how you document your findings, and how you improve each time. Keep iterating. Each room, each lab, is another level up.</p>
 </section>
-  
- <p>Thank you for reading!</p>
-  
+
+<p>Thank you for reading!</p>
+
 <footer>
   <p>© 2025 Del Risco Technologies</p>
 </footer>
