@@ -53,8 +53,8 @@
 <body>
 <header>
   <h1>TryHackMe: Brains Write-up</h1>
-  <p>The <em>Brains</em> room on TryHackMe revolves around exploiting and analyzing a real-world critical vulnerability in JetBrains TeamCity: <strong>CVE-2024-27198</strong>, which allows <strong>unauthenticated remote code execution</strong>. The scenario is divided into two phases. In the first part, you act as an attacker who is only given an IP address of the target server. In the second part, you shift perspective to the defender, inspecting logs through Splunk to trace and analyze the attack.</p>
-  <p>This exercise is not just about exploitation—it demonstrates how offensive and defensive tools can work together to improve cybersecurity awareness.</p>
+  <p>The <em>Brains</em> room on TryHackMe centers on exploiting a critical authentication bypass vulnerability in JetBrains TeamCity. Beginning with only the target IP address, you will navigate the exploitation process to gain unauthorized access.</p>
+  <p>Beyond the offensive aspect, the challenge shifts perspective to defenders, where you’ll analyze Splunk logs to detect and understand the attack’s footprint. This experience bridges the gap between attacker techniques and defender response, offering insight into both sides of a real-world security incident.</p>
 </header>
 
 <section>
@@ -76,19 +76,15 @@
   <p>Next, we manually investigate each open port:</p>
   <ul>
     <li><strong>Port 22 (SSH):</strong> Attempting SSH login fails due to unknown credentials.</li>
-    <li><strong>Port 80 (HTTP):</strong> Visiting <code>http://10.10.164.206</code> shows a maintenance page, with no useful information or hidden elements.</li>
-    <li><strong>Port 50000:</strong> Navigating to <code>http://10.10.164.206:50000</code> brings up a TeamCity login page. Importantly, the page footer shows the exact TeamCity version: <strong>2023.11.3 (build 147512)</strong>.</li>
+    <li><strong>Port 80 (HTTP):</strong> Visiting <code>http://10.10.164.206:80</code> shows a maintenance page, with no useful information or hidden elements.</li>
+    <li><strong>Port 50000 :</strong> Navigating to <code>http://10.10.164.206:50000</code> brings up a TeamCity login page. Importantly, the page footer shows the exact TeamCity version: <strong>2023.11.3 (build 147512)</strong>.</li>
   </ul>
   <p>Identifying the software version is critical because it enables us to research known vulnerabilities for that specific version.</p>
 </section>
 
 <section>
   <h2>Step 3: Researching Vulnerabilities</h2>
-  <p>With the version info, we search databases like CVE.org and the National Vulnerability Database for issues with TeamCity 2023.11.3. We discover the following key vulnerabilities:</p>
-  <ul>
-    <li><strong>CVE-2024-27198:</strong> A critical authentication bypass vulnerability enabling unauthenticated remote code execution. CVSS score 9.8.</li>
-    <li><strong>CVE-2024-27199:</strong> Related flaw with a high CVSS score of 7.3, also involving authentication bypass.</li>
-  </ul>
+  <p>After identifying the exact version of the target software—TeamCity 2023.11.3—we perform a quick search on vulnerability databases such as the National Vulnerability Database (NVD) or CVE.org. Using search queries like “TeamCity 2023.11.3 CVE” or “TeamCity vulnerabilities 2023.11.3,” we look for any reported security issues affecting this specific release. This search reveals CVE-2024-27198, a critical authentication bypass vulnerability that allows an attacker to gain unauthorized access and execute code remotely on the TeamCity server without providing valid credentials. The high severity rating indicates the significant impact this flaw could have on the target system. Understanding this vulnerability confirms that the target running TeamCity 2023.11.3 is exploitable. This information guides the next steps of the attack, focusing on leveraging this authentication bypass to achieve remote code execution.:</p>
   <p>These findings suggest that exploiting the authentication bypass can give us shell access without credentials.</p>
 </section>
 
@@ -135,7 +131,9 @@ set RPORT 50000</pre>
   <p>This hands-on practice reinforces the importance of the cyber kill chain: identifying attack surface (reconnaissance and weaponization), gaining access (exploitation), and detecting and responding (analysis and mitigation).</p>
   <p>Overall, this experience sharpened my skills in offensive tools like Nmap and Metasploit, and defensive platforms like Splunk, while deepening my understanding of attacker methodologies and defender workflows.</p>
 </section>
-
+  
+ <p>Thank you for reading!</p>
+  
 <footer>
   <p>© 2025 Del Risco Technologies</p>
 </footer>
