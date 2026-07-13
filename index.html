@@ -80,7 +80,7 @@
 
 <section>
   <h2>Step 3: Vulnerability Research</h2>
-  <p>After identifying TeamCity <strong>2023.11.3</strong>, I first did a quick search on Google to check if anything obvious came up. Then I went to trusted databases like the <a href="https://nvd.nist.gov/" target="_blank">NVD</a> and <a href="https://cve.org" target="_blank">CVE.org</a>. I used queries like:</p>
+  <p>After identifying TeamCity <strong>2023.11.3</strong>, I first did a quick search on Google to check if anything obvious came up. Then I went to trusted databases like the <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD</a> and <a href="https://cve.org" target="_blank" rel="noopener noreferrer">CVE.org</a>. I used queries like:</p>
   <pre>"TeamCity 2023.11.3"</pre>
   <p>This quickly led me to <strong>CVE-2024-27198</strong> — an <em>authentication bypass vulnerability</em> with a CVSS score of 9.8. This vulnerability allows attackers to bypass login and interact directly with internal server endpoints, enabling remote code execution (RCE).</p>
   <p>This stage maps directly to the <strong>weaponization</strong> phase in the Cyber Kill Chain. I now had a known, critical vulnerability to exploit—verified and confirmed by the version I discovered earlier.</p>
@@ -92,8 +92,8 @@
   <pre>msfconsole</pre>
   <p>I searched for the exploit module using the CVE identifier:</p>
   <pre>search CVE-2024-27198</pre>
-  <p>I select the exploit module it returned (option 0) and use it:</p>
-  <pre>use 0</pre>
+  <p>I loaded the module by its full name so the command remains reproducible even if Metasploit changes the search-result order:</p>
+  <pre>use exploit/multi/http/jetbrains_teamcity_rce_cve_2024_27198</pre>
   <p>To fully understand the module, I ran:</p>
   <pre>info</pre>
   <p>Then I set the remote target IP and port:</p>
