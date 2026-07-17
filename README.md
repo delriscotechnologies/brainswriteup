@@ -25,4 +25,4 @@ The repository is an educational record of the room and is intended to help lear
 
 ## Reference
 
-- [TryHackMe](https://tryhackme.com/)
+- [TryHackMe: Brains room](https://tryhackme.com/room/brains)
