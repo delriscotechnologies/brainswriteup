@@ -105,8 +105,8 @@
   <h2>Step 3: Vulnerability Research</h2>
   <p>After identifying TeamCity <strong>2023.11.3</strong>, I first did a quick search on Google to check if anything obvious came up. Then I went to trusted databases like the <a href="https://nvd.nist.gov/" target="_blank" rel="noopener noreferrer">NVD</a> and <a href="https://cve.org" target="_blank" rel="noopener noreferrer">CVE.org</a>. I used queries like:</p>
   <pre>"TeamCity 2023.11.3"</pre>
-  <p>This quickly led me to <strong>CVE-2024-27198</strong> — an <em>authentication bypass vulnerability</em> with a CVSS score of 9.8. This vulnerability allows attackers to bypass login and interact directly with internal server endpoints, enabling remote code execution (RCE).</p>
-  <p>This stage maps directly to the <strong>weaponization</strong> phase in the Cyber Kill Chain. I now had a known, critical vulnerability to exploit—verified and confirmed by the version I discovered earlier.</p>
+  <p>This quickly led me to <strong>CVE-2024-27198</strong> — an <em>authentication bypass vulnerability</em> affecting TeamCity versions before 2023.11.4. The bypass permits access to authenticated endpoints and can be chained with administrative actions to achieve remote code execution (RCE); the bypass itself is not a standalone command-execution primitive.</p>
+  <p>This stage maps to vulnerability research and weaponization in the Cyber Kill Chain. The identified version was within the affected range, and the next step was to validate the authorized lab's intended exploit chain.</p>
 </section>
 
 <section>
