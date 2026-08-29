@@ -20,3 +20,4 @@ It covers reconnaissance, TeamCity version identification, CVE-2024-27198 resear
 
 - [TryHackMe: Brains room](https://tryhackme.com/room/brains)
 - [JetBrains advisory for CVE-2024-27198 and CVE-2024-27199](https://blog.jetbrains.com/teamcity/2024/03/additional-critical-security-issues-affecting-teamcity-on-premises-cve-2024-27198-and-cve-2024-27199-update-to-2023-11-4-now/)
+
