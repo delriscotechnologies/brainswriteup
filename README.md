@@ -16,13 +16,6 @@ The repository is an educational record of the room and is intended to help lear
 
 > Use these techniques only in labs or on systems you own or are explicitly authorized to test.
 
-## Topics
-
-- Network reconnaissance with Nmap
-- TeamCity version identification and CVE research
-- Metasploit exploitation in a controlled lab
-- Defensive investigation with Splunk
-
 ## Reference
 
 - [TryHackMe: Brains room](https://tryhackme.com/room/brains)
