@@ -10,13 +10,13 @@
 
 ---
 
-This write-up follows the investigation of an exposed JetBrains TeamCity instance. It covers service discovery with Nmap, identification of TeamCity 2023.11.3, research into CVE-2024-27198, an authorized authentication-bypass and code-execution chain in the TryHackMe lab, and review of related activity in Splunk.
+This write-up follows an investigation of a vulnerable JetBrains TeamCity instance in the TryHackMe Brains lab.
 
-The repository is an educational record of the room and is intended to help learners connect offensive techniques with the logs and behaviors defenders can monitor.
+It covers reconnaissance, TeamCity version identification, CVE-2024-27198 research, authorized exploitation with Metasploit, and defensive investigation with Splunk.
 
 > Use these techniques only in labs or on systems you own or are explicitly authorized to test.
 
-## Reference
+## References
 
 - [TryHackMe: Brains room](https://tryhackme.com/room/brains)
 - [JetBrains advisory for CVE-2024-27198 and CVE-2024-27199](https://blog.jetbrains.com/teamcity/2024/03/additional-critical-security-issues-affecting-teamcity-on-premises-cve-2024-27198-and-cve-2024-27199-update-to-2023-11-4-now/)
