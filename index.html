@@ -85,7 +85,7 @@
   <ul>
     <li><strong>22/tcp (SSH)</strong> – Secure shell, possibly for admin access.</li>
     <li><strong>80/tcp (HTTP)</strong> – Default web server, worth visiting.</li>
-    <li><strong>50000/tcp</strong> – A high web port, which often reveals hidden or administrative services.</li>
+    <li><strong>50000/tcp</strong> – An open TCP service that required further identification.</li>
   </ul>
   <p>This reconnaissance phase is about defining the exposed attack surface, just like in the initial stages of the Cyber Kill Chain.</p>
 </section>
@@ -133,13 +133,13 @@ set RPORT 50000</pre>
   <p>Now on the Blue Team side, I accessed Splunk to see what traces the attack had left behind.</p>
   <h3>1. Suspicious User Creation</h3>
   <pre>source="/var/log/auth.log" useradd</pre>
-  <p>This showed a new user was added right after the exploit was run. Likely for persistence.</p>
+  <p><strong>Observed:</strong> a user-creation event appeared after the exploit window. The timing is consistent with possible persistence activity, but the event alone does not prove intent.</p>
   <h3>2. Unusual Package Installation</h3>
   <pre>source="/var/log/dpkg.log" date_month="july" date_mday="4" install</pre>
-  <p>Here, a suspicious package not part of the base install was added. Possibly a backdoor.</p>
+  <p><strong>Observed:</strong> a package installation occurred during the investigation window. The package name, source, and timing should be validated before classifying it as malicious or calling it a backdoor.</p>
   <h3>3. Plugin Upload in TeamCity</h3>
   <pre>source="/opt/teamcity/TeamCity/logs/teamcity-activities.log" plugin</pre>
-  <p>This confirmed a plugin was uploaded—likely the method used to deliver the payload.</p>
+  <p><strong>Observed:</strong> plugin-related activity appeared in the TeamCity logs. The Metasploit module used in this lab uploads a plugin as part of its exploit chain, so this event is consistent with that technique; timestamp and plugin details should still be correlated before attribution.</p>
 </section>
 
 <section>
