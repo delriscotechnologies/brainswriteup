@@ -94,7 +94,7 @@
   <h2>Step 2: Exploring and Identifying the Target</h2>
   <p>I began visiting the exposed services in my browser.</p>
   <ul>
-    <li><strong>SSH</strong>: Blocked. No credentials. No brute force.</li>
+    <li><strong>SSH</strong>: The port was open, but no login was attempted without credentials.</li>
     <li><strong>HTTP (80)</strong>: A default maintenance page. The source code was clean. No JavaScript tricks, no hints.</li>
     <li><strong>HTTP (50000)</strong>: Jackpot. The login page of JetBrains TeamCity was exposed. In the footer, I found the version: <strong>2023.11.3 (build 147512)</strong>.</li>
   </ul>
@@ -158,3 +158,4 @@ set RPORT 50000</pre>
 <script src="reading-progress.js" defer></script>
 </body>
 </html>
+
