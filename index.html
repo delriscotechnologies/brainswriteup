@@ -122,6 +122,8 @@
   <p>Then I set the remote target IP and port:</p>
   <pre>set RHOSTS 10.10.164.206
 set RPORT 50000</pre>
+  <pre>show options</pre>
+  <p>Check the selected payload and its required options before running the module. For a reverse payload, set <code>LHOST</code> to the attacker address reachable from the target.</p>
   <p>Finally, I launched the exploit:</p>
   <pre>run</pre>
   <p>This provided a Meterpreter session as the <code>ubuntu</code> user. I validated my access with:</p>
@@ -130,7 +132,7 @@ set RPORT 50000</pre>
 
 <section>
   <h2>Step 5: Defensive Detection with Splunk</h2>
-  <p>Now on the Blue Team side, I accessed Splunk to see what traces the attack had left behind.</p>
+  <p>Now on the Blue Team side, I accessed Splunk to see what traces the attack had left behind. Set Splunk’s time picker to the incident interval, including the year. These searches identify events for investigation; they do not establish malicious activity by themselves.</p>
   <h3>1. Suspicious User Creation</h3>
   <pre>source="/var/log/auth.log" useradd</pre>
   <p><strong>Observed:</strong> a user-creation event appeared after the exploit window. The timing is consistent with possible persistence activity, but the event alone does not prove intent.</p>
